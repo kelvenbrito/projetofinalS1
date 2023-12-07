@@ -16,6 +16,8 @@ public class JanelaPrincipal extends JFrame {
         jTPane.add("Cadastro de produtos", tab1);
         VendasPainel tab2 = new VendasPainel();
         jTPane.add("Vendas", tab2);
+        cadastroCliente tab3 = new cadastroCliente();
+        jTPane.add("Cadastro Clientes", tab3);
         setBounds(100, 100, 600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
