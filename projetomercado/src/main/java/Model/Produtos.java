@@ -2,41 +2,41 @@ package Model;
 
 public class Produtos {
     //=============Atributos=============
-    private String nome;
     private String codigoBarra;
-    private String preco;
-     private String quantidade;
+    private String nome;
+    private double preco;
+     private int quantidade;
 
     //=============Construtor=============
-      public Produtos(String nome, String codigoBarra, String preco, String quantidade) {
-        this.nome = nome;
+      public Produtos(String codigoBarra, String nome,  double preco, int quantidade) {
         this.codigoBarra = codigoBarra;
+        this.nome = nome;
         this.preco = preco;
         this.quantidade = quantidade;
     }
     //=============Get and Set=============
+      public String getCodigoBarra() {
+        return codigoBarra;
+    }
+    public void setCodigoBarra(String codigoBarra) {
+        this.codigoBarra = codigoBarra;
+    }
     public String getNome() {
         return nome;
     }
     public void setNome(String nome) {
         this.nome = nome;
     }
-    public String getCodigoBarra() {
-        return codigoBarra;
-    }
-    public void setCodigoBarra(String codigoBarra) {
-        this.codigoBarra = codigoBarra;
-    }
-    public String getPreco() {
+    public double getPreco() {
         return preco;
     }
-    public void setPreco(String preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
     }
-    public String getQuantidade() {
+    public int getQuantidade() {
         return quantidade;
     }
-    public void setQuantidade(String quantidade) {
+    public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
     }
 

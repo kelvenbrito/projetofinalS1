@@ -7,16 +7,16 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import Connection.ClientesDAO;
-import Model.Cliente;
+import Model.Clientes;
 
 public class ClientesControl {
     // Atributos
-    private List<Cliente> clientes;
+    private List<Clientes> clientes;
     private DefaultTableModel tableModel;
     private JTable table;
 
     // Construtor
-    public ClientesControl(List<Cliente> clientes, DefaultTableModel tableModel, JTable table) {
+    public ClientesControl() {
         this.clientes = clientes;
         this.tableModel = tableModel;
         this.table = table;

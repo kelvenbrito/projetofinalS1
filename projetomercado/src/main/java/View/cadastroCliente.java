@@ -1,10 +1,14 @@
 package View;
 
-import javax.swing.BoxLayout;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import Connection.ClientesDAO;
+import Controller.ClientesControl;
+
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -32,6 +36,21 @@ public class cadastroCliente extends JPanel {
         botoes.add(cadastrar = new JButton("Cadastrar"));
         botoes.add(excluir = new JButton("Excluir"));
         add(botoes);
-    }
 
+        // criar o banco de dados
+        new ClientesDAO().criaTabela();
+
+        // tratamento de eventos(construtor)
+        ClientesControl operacoes = new ClientesControl();
+
+        // tratamento para botão cadastrar
+        cadastrar.addActionListener(e -> {
+
+            operacoes.cadastrar(nomeCliente.getText(),  cpfCliente.getText());
+
+            nomeCliente.setText("");
+            cpfCliente.setText("");
+        });
+
+    }
 }

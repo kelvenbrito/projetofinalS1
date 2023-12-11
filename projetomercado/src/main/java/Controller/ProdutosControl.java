@@ -37,7 +37,7 @@ public class ProdutosControl {
     }
 
     // Método para cadastrar um novo carro no banco de dados
-    public void cadastrar(String codigoBarra, String nome, String preco, String quantidade) {
+    public void cadastrar(String codigoBarra, String nome, double preco, int quantidade) {
         // Chama o método de cadastro no banco de dados
         new ProdutosDAO().cadastrar(codigoBarra, nome, preco, quantidade);
         // Atualiza a tabela de exibição após o cadastro
@@ -47,7 +47,7 @@ public class ProdutosControl {
     }
 
     // Método para atualizar os dados de um carro no banco de dados
-    public void atualizar(String codigoBarra, String nome, String preco, String quantidade) {
+    public void atualizar(String codigoBarra, String nome, double preco, int quantidade) {
         // Chama o método de atualização no banco de dados
         new ProdutosDAO().atualizar(codigoBarra, nome, preco, quantidade);
         // Atualiza a tabela de exibição após a atualização

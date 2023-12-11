@@ -2,19 +2,34 @@ package View;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
+import Connection.ClientesDAO;
+import Connection.ProdutosDAO;
+import Connection.VendasDAO;
+import Controller.ProdutosControl;
+import Controller.VendasControl;
+import Model.Produtos;
+import Model.Vendas;
+import Model.Clientes;
 
 public class VendasPainel extends JPanel {
     // Atributos(componentes)
@@ -22,10 +37,13 @@ public class VendasPainel extends JPanel {
     private JTextField clienteCpfField, codigoProdutoField, quantidadeProdutoField;
     private JLabel valorFinal, status;
     private JComboBox formaPagamento;
-    // private List<Clientes> clientes;
+
     private JTable table;
     private DefaultTableModel tableModel;
     private int linhaSelecionada = -1;
+    private List<Vendas> vendas;
+    private List<Clientes> clientes;
+    private List<Produtos> produtos;
 
     //
     // Construtor(GUI-JPanel)
@@ -37,7 +55,7 @@ public class VendasPainel extends JPanel {
         inputPanel.add(new JLabel("CPF"));
         clienteCpfField = new JTextField(20);
         inputPanel.add(clienteCpfField);
-        //Status Cliente
+        // Status Cliente
         inputPanel.add(status = new JLabel("Não Cadastrado"));
         inputPanel.add(cadastrar = new JButton("Cadastrar"));
         // Forma de pagamento
@@ -50,6 +68,7 @@ public class VendasPainel extends JPanel {
         inputPanel.add(codigoProdutoField);
         inputPanel.add(new JLabel("Quantidade"));
         quantidadeProdutoField = new JTextField(3);
+        quantidadeProdutoField.setText("1");
         inputPanel.add(quantidadeProdutoField);
         add(inputPanel);
         JPanel botoes = new JPanel();
@@ -68,7 +87,7 @@ public class VendasPainel extends JPanel {
         add(jSPane);
 
         tableModel = new DefaultTableModel(new Object[][] {},
-                new String[] { "Nome", "Quantidade", "Código", "Preço", "Desconto VIP" });
+                new String[] { "Código", "Nome", "Quantidade", "Preço", "Desconto VIP" });
         table = new JTable(tableModel);
         jSPane.setViewportView(table);
 
@@ -77,8 +96,8 @@ public class VendasPainel extends JPanel {
         add(teste);
 
         // Cria o banco de dados caso não tenha sido criado
-        // new ClientesDAO().criaTabela();
-        // atualizarTabela();
+        new VendasDAO().criaTabela();
+       
 
         // Tratamento de eventos -- dentro construtor
         table.addMouseListener(new MouseAdapter() {
@@ -92,51 +111,66 @@ public class VendasPainel extends JPanel {
             }
         });
 
-        // ClientesControl operacoes = new ClientesControl(clientes, tableModel, table);
-        // Configura a ação do botão "cadastrar" para adicionar um novo registro no
-        // banco de dados
+        clienteCpfField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+                if (key == KeyEvent.VK_ENTER) {
+                    clientes = new ClientesDAO().listarTodos();
+                    for (Clientes cliente : clientes) {
+                        if (clienteCpfField.getText().equals(cliente.getCpf())) {
+                            status.setText("Cliente cadastrado!");
+                            break;
+                        } else {
+                            status.setText("Cliente não cadastrado!");
+                        }
+                    }
 
-        // Tratamento do botão cadastrar
-        // cadastrar.addActionListener(e -> {
-        // operacoes.cadastrar(clienteNomeField.getText(),
-        // clienteIdadeField.getText(), clienteCPFField.getText());
-        // clienteNomeField.setText("");
-        // clienteIdadeField.setText("");
-        // clienteCPFField.setText("");
-        // });
+                }
+            }
+        });
 
-        // // Tratamento do botão editar
-        // editar.addActionListener(e -> {
-        // operacoes.atualizar(clienteNomeField.getText(),
-        // clienteIdadeField.getText(), clienteCPFField.getText());
-        // clienteNomeField.setText("");
-        // clienteIdadeField.setText("");
-        // clienteCPFField.setText("");
-        // });
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"); // Formato personalizado
+        String dataHora = dateTime.format(formatter); // Obtém data e hora formatadas
 
-        // // Configura a ação do botão "apagar" para excluir um registro no banco de
-        // dados
-        // apagar.addActionListener(e -> {
-        // operacoes.apagar( clienteCPFField.getText());
-        // // Limpa os campos de entrada após a operação de exclusão
-        // clienteNomeField.setText("");
-        // clienteIdadeField.setText("");
-        // clienteCPFField.setText("");
-        // });
+        VendasControl operacoes = new VendasControl(vendas, tableModel, table);
+        // tratamento para botão cadastrar
+        finalizarVenda.addActionListener(e -> {
+            operacoes.cadastrar(clienteCpfField.getText(), valorFinal.getText(), dataHora);
+
+        });
+
+        inserirProduto.addActionListener(e -> {
+            produtos = new ProdutosDAO().listarTodos();
+            boolean verificPoduto = false;
+              double vf = 0;
+            for (Produtos produto : produtos) {
+                if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                    tableModel.addRow(new Object[] {  produto.getCodigoBarra(), produto.getNome(),quantidadeProdutoField.getText(), produto.getPreco(),25  });
+                  vf += produto.getPreco() *  Double.parseDouble(quantidadeProdutoField.getText());
+                    valorFinal.setText(  vf + "");
+                   
+                    verificPoduto = true;
+                  
+                } 
+            }
+            if (!verificPoduto) {
+                JOptionPane.showMessageDialog(null, "Produto não encontrado!");
+            }
+        });
+
+       cadastrar.addActionListener(e -> {
+        // Exibe o painel com a tabela de histórico de vendas
+            JFrame cadFrame = new JFrame("Cadastro de cliente");
+            cadFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            cadastroCliente tab3 = new cadastroCliente();
+             cadFrame.add(tab3);
+            cadFrame.pack();
+            cadFrame.setVisible(true);
+        });
 
     }
 
-    // Métodos (Atualizar tabela)
-    // Método para atualizar a tabela de exibição com dados do banco de dados
-    // private void atualizarTabela() {
-    // tableModel.setRowCount(0); // Limpa todas as linhas existentes na tabela
-    // clientes = new ClientesDAO().listarTodos();
-    // // Obtém os clientes atualizados do banco de dados
-    // for (Clientes cliente : clientes) {
-    // // Adiciona os dados de cada cliente como uma nova linha na tabela Swing
-    // tableModel.addRow(new Object[] { cliente.getNome(), cliente.getIdade(),
 
-    // cliente.getCpf() });
-    // }
-    // }
 }

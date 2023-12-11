@@ -1,11 +1,11 @@
 package Model;
 
-public class Cliente {
+public class Clientes {
     //=============Atributos=============
     private String nome;
     private String cpf;
     //=============Construtor=============
-    public Cliente(String nome, String cpf) {
+    public Clientes(String nome, String cpf) {
         this.nome = nome;
         this.cpf = cpf;
     }

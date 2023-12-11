@@ -22,7 +22,7 @@ public class ProdutosDAO {
 
     // criar Tabela
     public void criaTabela() {
-        String sql = "CREATE TABLE IF NOT EXISTS produtos_noite (nome VARCHAR(255), codProduto VARCHAR(255) PRIMARY KEY, preco VARCHAR(255), quantidade VARCHAR(255))";
+        String sql = "CREATE TABLE IF NOT EXISTS produtos_noite (codProduto VARCHAR(255) PRIMARY KEY, nome VARCHAR(255), preco DOUBLE PRECISION, quantidade INTEGER)";
         try (Statement stmt = this.connection.createStatement()) {
             stmt.execute(sql);
             System.out.println("Tabela de produtos criada com sucesso.");
@@ -51,10 +51,10 @@ public class ProdutosDAO {
                 // registro
 
                 Produtos produto = new Produtos(
-                        rs.getString("nome"),
                         rs.getString("codProduto"),
-                        rs.getString("preco"),
-                        rs.getString("quantidade"));
+                        rs.getString("nome"),
+                        rs.getDouble("preco"),
+                        rs.getInt("quantidade"));
                 produtos.add(produto); // Adiciona o objeto Produto à lista de produtos
             }
         } catch (SQLException ex) {
@@ -68,16 +68,16 @@ public class ProdutosDAO {
     }
 
     // Cadastrar Carro no banco
-    public void cadastrar(String nome, String codProduto, String preco, String quantidade) {
+    public void cadastrar(String codProduto, String nome, double preco, int quantidade) {
         PreparedStatement stmt = null;
         // Define a instrução SQL parametrizada para cadastrar na tabela
-        String sql = "INSERT INTO produtos_noite (nome, codProduto, preco, quantidade)VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO produtos_noite (codProduto, nome, preco, quantidade)VALUES (?, ?, ?, ?)";
         try {
             stmt = connection.prepareStatement(sql);
-            stmt.setString(1, nome);
-            stmt.setString(2, codProduto);
-            stmt.setString(3, preco);
-            stmt.setString(4, quantidade);
+            stmt.setString(1, codProduto);
+            stmt.setString(2, nome);
+            stmt.setDouble(3, preco);
+            stmt.setInt(4, quantidade);
             stmt.executeUpdate();
             System.out.println("Dados inseridos com sucesso");
         } catch (SQLException e) {
@@ -88,18 +88,24 @@ public class ProdutosDAO {
     }
 
     // Atualizar dados no banco
-    public void atualizar(String nome, String codProduto, String preco, String quantidade) {
+    public void atualizar(String codProduto, String nome, double preco, int quantidade) {
         PreparedStatement stmt = null;
-        // Define a instrução SQL parametrizada para atualizar dados pela placa
+        // Define a instrução SQL parametrizada para atualizar dados pelo código do
+        // produto
         String sql = "UPDATE produtos_noite SET nome = ?, preco = ?, quantidade = ? WHERE codProduto = ?";
         try {
             stmt = connection.prepareStatement(sql);
-            stmt.setString(1, nome);
-            stmt.setString(2, preco);
-            stmt.setString(3, quantidade);
-            stmt.setString(4, codProduto);
-            stmt.executeUpdate();
-            System.out.println("Dados atualizados com sucesso");
+            stmt.setString(1, nome); // Corrigido: nome vem primeiro
+            stmt.setDouble(2, preco); // Corrigido: preco em segundo
+            stmt.setInt(3, quantidade); // Corrigido: quantidade em terceiro
+            stmt.setString(4, codProduto); // Por último, o código do produto
+
+            int rowsEdit = stmt.executeUpdate(); // Executa a instrução SQL e obtém o número de linhas afetadas
+            if (rowsEdit > 0) {
+                System.out.println("Produto atualizado com sucesso");
+            } else {
+                System.out.println("Nenhum produto foi atualizado. Verifique o código do produto.");
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar dados no banco de dados.", e);
         } finally {
@@ -110,17 +116,22 @@ public class ProdutosDAO {
     // Apagar dados do banco
     public void apagar(String codProduto) {
         PreparedStatement stmt = null;
-        // Define a instrução SQL parametrizada para apagar dados pela placa
+        // Define a instrução SQL parametrizada para apagar dados pelo código do produto
         String sql = "DELETE FROM produtos_noite WHERE codProduto = ?";
         try {
             stmt = connection.prepareStatement(sql);
             stmt.setString(1, codProduto);
-            stmt.executeUpdate(); // Executa a instrução SQL
-            System.out.println("Dado apagado com sucesso");
+            int rowsDeleted = stmt.executeUpdate(); // Executa a instrução SQL e obtém o número de linhas deletadas
+            if (rowsDeleted > 0) {
+                System.out.println("Produto apagado com sucesso");
+            } else {
+                System.out.println("Nenhum produto foi apagado. Verifique o código do produto.");
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao apagar dados no banco de dados.", e);
         } finally {
             ConnectionFactory.closeConnection(connection, stmt);
         }
     }
+
 }

@@ -22,7 +22,7 @@ public class VendasDAO {
 
     // criar Tabela
     public void criaTabela() {
-        String sql = "CREATE TABLE IF NOT EXISTS vendas_noite (cpf VARCHAR(255), totalCompra VARCHAR(255), dataHora VARCHAR(255), idSerial SERIAL PRIMARY KEY)";
+        String sql = "CREATE TABLE IF NOT EXISTS vendas_noite (idSerial SERIAL PRIMARY KEY, cpf VARCHAR(255), totalCompra VARCHAR(255), dataHora VARCHAR(255) )";
         try (Statement stmt = this.connection.createStatement()) {
             stmt.execute(sql);
             System.out.println("Tabela de vendas criada com sucesso.");
@@ -51,10 +51,11 @@ public class VendasDAO {
                 // registro
 
                 Vendas venda = new Vendas(
+                        rs.getString("idSerial"),
                         rs.getString("cpf"),
                         rs.getString("totalCompra"),
-                        rs.getString("dataHora"),
-                        rs.getString("idSerial"));
+                        rs.getString("dataHora"));
+
                 vendas.add(venda); // Adiciona o objeto Vendas à lista de vendas
             }
         } catch (SQLException ex) {
@@ -86,7 +87,6 @@ public class VendasDAO {
         }
     }
 
-
     // Apagar dados do banco
     public void apagar(String idSerial) {
         PreparedStatement stmt = null;
@@ -103,4 +103,6 @@ public class VendasDAO {
             ConnectionFactory.closeConnection(connection, stmt);
         }
     }
+
+    
 }
