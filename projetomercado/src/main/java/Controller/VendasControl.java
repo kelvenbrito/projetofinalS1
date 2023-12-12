@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import Connection.ProdutosDAO;
 import Connection.VendasDAO;
 import Model.Vendas;
 
@@ -25,23 +26,22 @@ public class VendasControl {
     // Métodos do modelo CRUD
     // Método para atualizar a tabela de exibição com dados do banco de dados
     // private void atualizarTabela() {
-    //     tableModel.setRowCount(0); // Limpa todas as linhas existentes na tabela
-    //     vendas = new VendasDAO().listarTodos();
-    //     // Obtém os vendas atualizados do banco de dados
-    //     for (Vendas venda : vendas) {
-    //         // Adiciona os dados de cada venda como uma nova linha na tabela Swing
-    //         tableModel.addRow(new Object[] { venda.getIdSerial(), venda.getCpf(),
+    // tableModel.setRowCount(0); // Limpa todas as linhas existentes na tabela
+    // vendas = new VendasDAO().listarTodos();
+    // // Obtém os vendas atualizados do banco de dados
+    // for (Vendas venda : vendas) {
+    // // Adiciona os dados de cada venda como uma nova linha na tabela Swing
+    // tableModel.addRow(new Object[] { venda.getIdSerial(), venda.getCpf(),
 
-    //                 venda.getDataHora(), venda.getTotalCompra() });
-    //     }
+    // venda.getDataHora(), venda.getTotalCompra() });
+    // }
     // }
 
     // Método para cadastrar uma nova venda no banco de dados
     public void cadastrar(String cpf, String totalCompra, String dataHora) {
         // Chama o método de cadastro no banco de dados
         new VendasDAO().cadastrar(cpf, totalCompra, dataHora);
-      
-  
+
         // Mensagem confirmando o cadastro
         JOptionPane.showMessageDialog(null, "Venda cadastrada com sucesso.");
     }
@@ -51,11 +51,10 @@ public class VendasControl {
 
         // Chama o método de exclusão no banco de dados
         new VendasDAO().apagar(idSerial);
-     
+
         // Mensagem confirmando o edição
         JOptionPane.showMessageDialog(null, "Venda apagada com sucesso.");
     }
-
 
     // ======================Validação de Dados==========================
     // Método interno para validação de dados númericos

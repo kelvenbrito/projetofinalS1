@@ -44,6 +44,10 @@ public class VendasPainel extends JPanel {
     private List<Vendas> vendas;
     private List<Clientes> clientes;
     private List<Produtos> produtos;
+    double vf = 0;
+    boolean descontoVip = false;
+    int linhaEditar = 0;
+    boolean verificPoduto = false;
 
     //
     // Construtor(GUI-JPanel)
@@ -73,14 +77,14 @@ public class VendasPainel extends JPanel {
         add(inputPanel);
         JPanel botoes = new JPanel();
         botoes.add(inserirProduto = new JButton("Inserir"));
-        botoes.add(apagarProduto = new JButton("Editar"));
-        botoes.add(finalizarVenda = new JButton("Apagar"));
+        botoes.add(editarProduto = new JButton("Editar"));
+        botoes.add(apagarProduto = new JButton("Apagar"));
         add(botoes);
         // Total da compra
         JPanel precoTotal = new JPanel();
         precoTotal.setLayout(new BorderLayout());
         precoTotal.add(new JLabel("Valor Final da Compra: "), BorderLayout.WEST);
-        precoTotal.add(valorFinal = new JLabel("12545"), BorderLayout.CENTER);
+        precoTotal.add(valorFinal = new JLabel(""), BorderLayout.CENTER);
         add(precoTotal);
         // tabela de clientes
         JScrollPane jSPane = new JScrollPane();
@@ -97,7 +101,6 @@ public class VendasPainel extends JPanel {
 
         // Cria o banco de dados caso não tenha sido criado
         new VendasDAO().criaTabela();
-       
 
         // Tratamento de eventos -- dentro construtor
         table.addMouseListener(new MouseAdapter() {
@@ -105,8 +108,9 @@ public class VendasPainel extends JPanel {
             public void mouseClicked(MouseEvent evt) {
                 linhaSelecionada = table.rowAtPoint(evt.getPoint());
                 if (linhaSelecionada != -1) {
-                    clienteCpfField.setText((String) table.getValueAt(linhaSelecionada, 0));
-                    codigoProdutoField.setText((String) table.getValueAt(linhaSelecionada, 1));
+                    linhaEditar = linhaSelecionada;
+                    codigoProdutoField.setText((String) table.getValueAt(linhaSelecionada, 0));
+                    quantidadeProdutoField.setText((String) table.getValueAt(linhaSelecionada, 2));
                 }
             }
         });
@@ -116,16 +120,25 @@ public class VendasPainel extends JPanel {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
                 if (key == KeyEvent.VK_ENTER) {
-                    clientes = new ClientesDAO().listarTodos();
-                    for (Clientes cliente : clientes) {
-                        if (clienteCpfField.getText().equals(cliente.getCpf())) {
-                            status.setText("Cliente cadastrado!");
-                            break;
-                        } else {
-                            status.setText("Cliente não cadastrado!");
-                        }
-                    }
 
+                    int linha = table.getRowCount();
+                    if (linha == 0) {
+
+                        clientes = new ClientesDAO().listarTodos();
+                        for (Clientes cliente : clientes) {
+                            if (clienteCpfField.getText().equals(cliente.getCpf())) {
+                                status.setText("Cliente cadastrado!");
+                                descontoVip = true;
+                                break;
+                            } else {
+                                status.setText("Cliente não cadastrado!");
+                            }
+                        }
+
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Não é possivel inserir desconto VIP após  inserir um produto ao carrinho");
+                    }
                 }
             }
         });
@@ -138,39 +151,114 @@ public class VendasPainel extends JPanel {
         // tratamento para botão cadastrar
         finalizarVenda.addActionListener(e -> {
             operacoes.cadastrar(clienteCpfField.getText(), valorFinal.getText(), dataHora);
-
         });
 
         inserirProduto.addActionListener(e -> {
             produtos = new ProdutosDAO().listarTodos();
-            boolean verificPoduto = false;
-              double vf = 0;
+
             for (Produtos produto : produtos) {
-                if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
-                    tableModel.addRow(new Object[] {  produto.getCodigoBarra(), produto.getNome(),quantidadeProdutoField.getText(), produto.getPreco(),25  });
-                  vf += produto.getPreco() *  Double.parseDouble(quantidadeProdutoField.getText());
-                    valorFinal.setText(  vf + "");
-                   
-                    verificPoduto = true;
-                  
-                } 
+                if (descontoVip) {
+                    if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                        tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
+                                quantidadeProdutoField.getText(), produto.getPreco(), 25 });
+                        vf += (produto.getPreco() * 0.75) * Double.parseDouble(quantidadeProdutoField.getText());
+                        valorFinal.setText(vf + "");
+
+                        verificPoduto = true;
+
+                    }
+                } else {
+                    if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                        tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
+                                quantidadeProdutoField.getText(), produto.getPreco(), 0 });
+                        vf += produto.getPreco() * Double.parseDouble(quantidadeProdutoField.getText());
+                        valorFinal.setText(vf + "");
+
+                        verificPoduto = true;
+
+                    }
+                }
+
             }
             if (!verificPoduto) {
                 JOptionPane.showMessageDialog(null, "Produto não encontrado!");
             }
         });
 
-       cadastrar.addActionListener(e -> {
-        // Exibe o painel com a tabela de histórico de vendas
+        cadastrar.addActionListener(e -> {
+            // Exibe o painel com a tabela de histórico de vendas
             JFrame cadFrame = new JFrame("Cadastro de cliente");
             cadFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             cadastroCliente tab3 = new cadastroCliente();
-             cadFrame.add(tab3);
+            cadFrame.add(tab3);
             cadFrame.pack();
             cadFrame.setVisible(true);
         });
 
-    }
+        editarProduto.addActionListener(ev -> {
+            if (linhaEditar != -1) { // Verifica se uma linha está selecionada na tabela
+                String novoCodigo = codigoProdutoField.getText();
+                String novaQuantidade = quantidadeProdutoField.getText();
+                double precoAntigo = (double) tableModel.getValueAt(linhaEditar, 3);
+                String quantidadeAntigaStr = (String) tableModel.getValueAt(linhaEditar, 2);
+                int quantidadeAntiga = Integer.parseInt(quantidadeAntigaStr);
 
+                tableModel.setValueAt(novoCodigo, linhaEditar, 0);
+                tableModel.setValueAt(novaQuantidade, linhaEditar, 2);
+
+                produtos = new ProdutosDAO().listarTodos();
+
+                for (Produtos produto : produtos) {
+
+                    if (descontoVip) {
+                        if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                            tableModel.setValueAt(produto.getNome(), linhaEditar, 1);
+                            tableModel.setValueAt(produto.getPreco(), linhaEditar, 3);
+
+                            // Subtrai preco do produto no valorFinal
+                            vf -= precoAntigo * quantidadeAntiga * 0.75;
+                            vf += produto.getPreco() * 0.75 *
+                                    Double.parseDouble(quantidadeProdutoField.getText());
+                            valorFinal.setText(vf + "");
+
+                            verificPoduto = true;
+
+                        }
+                    } else {
+                        if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                            tableModel.setValueAt(produto.getNome(), linhaEditar, 1);
+                            tableModel.setValueAt(produto.getPreco(), linhaEditar, 3);
+
+                            // Subtrai preco do produto no valorFinal
+                            vf -= precoAntigo;
+                            vf += produto.getPreco() *
+                                    Double.parseDouble(quantidadeProdutoField.getText());
+                            valorFinal.setText(vf + "");
+
+                            verificPoduto = true;
+
+                        }
+                    }
+
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(null, "");
+            }
+
+        });
+
+        apagarProduto.addActionListener(ev -> {
+            if (linhaEditar != -1) { // Verifica se uma linha está selecionada na tabela
+                tableModel.removeRow(linhaEditar);
+                vf = 0;
+                valorFinal.setText(vf + "");
+
+            } else {
+                JOptionPane.showMessageDialog(null, "");
+            }
+        });
+
+    }
 
 }

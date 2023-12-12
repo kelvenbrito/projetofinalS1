@@ -64,12 +64,13 @@ public class CadastroProdutosPainel extends JPanel {
     table.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent evt) {
-          linhaSelecionada = table.rowAtPoint(evt.getPoint());
+        linhaSelecionada = table.rowAtPoint(evt.getPoint());
         if (linhaSelecionada != -1) {
           codBarras.setText((String) table.getValueAt(linhaSelecionada, 0));
           nomeProd.setText((String) table.getValueAt(linhaSelecionada, 1));
-          precoProd.setText((String) table.getValueAt(linhaSelecionada, 2));
-          quantProd.setText((String) table.getValueAt(linhaSelecionada, 3));
+          double preco = (double) table.getValueAt(linhaSelecionada, 2);
+          precoProd.setText(preco + "");
+          quantProd.setText(String.valueOf((int) table.getValueAt(linhaSelecionada, 3)));
 
         }
       }
@@ -79,9 +80,9 @@ public class CadastroProdutosPainel extends JPanel {
 
     // tratamento para botão cadastrar
     cadastrar.addActionListener(e -> {
-    
+
       operacoes.cadastrar(codBarras.getText(), nomeProd.getText(),
-         Double.parseDouble( precoProd.getText()), Integer.parseInt(quantProd.getText()));
+          Double.parseDouble(precoProd.getText()), Integer.parseInt(quantProd.getText()));
 
       codBarras.setText("");
       nomeProd.setText("");
@@ -92,7 +93,7 @@ public class CadastroProdutosPainel extends JPanel {
     // tratamento do botão editar
     editar.addActionListener(e -> {
       operacoes.atualizar(codBarras.getText(), nomeProd.getText(),
-          Double.parseDouble( precoProd.getText()), Integer.parseInt(quantProd.getText()));
+          Double.parseDouble(precoProd.getText()), Integer.parseInt(quantProd.getText()));
       codBarras.setText("");
       nomeProd.setText("");
       precoProd.setText("");
@@ -114,11 +115,12 @@ public class CadastroProdutosPainel extends JPanel {
   // Método para atualizar a tabela de exibição com dados do banco de dados
   private void atualizarTabela() {
     tableModel.setRowCount(0); // Limpa todas as linhas existentes na tabela
-   produtos = new ProdutosDAO().listarTodos();
+    produtos = new ProdutosDAO().listarTodos();
     // Obtém os produtos atualizados do banco de dados
     for (Produtos produto : produtos) {
       // Adiciona os dados de cada produto como uma nova linha na tabela Swing
-      tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(), produto.getPreco(),produto.getQuantidade()});
+      tableModel.addRow(
+          new Object[] { produto.getCodigoBarra(), produto.getNome(), produto.getPreco(), produto.getQuantidade() });
     }
   }
 }
