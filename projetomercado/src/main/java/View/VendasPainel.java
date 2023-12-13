@@ -35,7 +35,7 @@ public class VendasPainel extends JPanel {
     // Atributos(componentes)
     private JButton inserirProduto, apagarProduto, editarProduto, finalizarVenda, cadastrar;
     private JTextField clienteCpfField, codigoProdutoField, quantidadeProdutoField, valorFinal;
-    private JLabel  status;
+    private JLabel status;
     private JComboBox formaPagamento;
 
     private JTable table;
@@ -81,7 +81,7 @@ public class VendasPainel extends JPanel {
         botoes.add(editarProduto = new JButton("Editar"));
         botoes.add(apagarProduto = new JButton("Apagar"));
         add(botoes);
-      
+
         // tabela de clientes
         JScrollPane jSPane = new JScrollPane();
         add(jSPane);
@@ -90,7 +90,7 @@ public class VendasPainel extends JPanel {
                 new String[] { "Código", "Nome", "Quantidade", "Preço", "Desconto VIP" });
         table = new JTable(tableModel);
         jSPane.setViewportView(table);
-          // Total da compra
+        // Total da compra
         JPanel precoTotal = new JPanel();
         precoTotal.setLayout(new BorderLayout());
         precoTotal.add(new JLabel("Valor Final da Compra: "), BorderLayout.CENTER);
@@ -179,7 +179,7 @@ public class VendasPainel extends JPanel {
                         verificPoduto = true;
 
                     }
-                     quantidadeVenda = produto.getQuantidade() - Integer.parseInt(quantidadeProdutoField.getText());
+                    quantidadeVenda = produto.getQuantidade() - Integer.parseInt(quantidadeProdutoField.getText());
 
                     operacoes.vender(codigoProdutoField.getText(), quantidadeVenda);
 
@@ -247,14 +247,13 @@ public class VendasPainel extends JPanel {
                         }
 
                         if (quantidadeAntiga - Integer.parseInt(quantidadeProdutoField.getText()) >= 0) {
-                             quantidadeVenda = produto.getQuantidade() + (quantidadeAntiga
+                            quantidadeVenda = produto.getQuantidade() + (quantidadeAntiga
                                     - Integer.parseInt(quantidadeProdutoField.getText()));
 
-                        }else{
-                                quantidadeVenda = produto.getQuantidade() - (Integer.parseInt(quantidadeProdutoField.getText()) - quantidadeAntiga );
+                        } else {
+                            quantidadeVenda = produto.getQuantidade()
+                                    - (Integer.parseInt(quantidadeProdutoField.getText()) - quantidadeAntiga);
                         }
-
-                
 
                         operacoes.vender(codigoProdutoField.getText(), quantidadeVenda);
                     }
@@ -269,12 +268,22 @@ public class VendasPainel extends JPanel {
 
         apagarProduto.addActionListener(ev -> {
             if (linhaEditar != -1) { // Verifica se uma linha está selecionada na tabela
-                tableModel.removeRow(linhaEditar);
+
                 vf = 0;
                 valorFinal.setText(vf + "");
+                String quantidadeAntigaStr = (String) tableModel.getValueAt(linhaEditar, 2);
+                int quantidadeAntiga = Integer.parseInt(quantidadeAntigaStr);
+                produtos = new ProdutosDAO().listarTodos();
+
+                for (Produtos produto : produtos) {
+                    quantidadeVenda = produto.getQuantidade() + quantidadeAntiga;
+                    operacoes.vender(codigoProdutoField.getText(), quantidadeVenda);
+                }
+                tableModel.removeRow(linhaEditar);
 
             } else {
                 JOptionPane.showMessageDialog(null, "");
+
             }
         });
 

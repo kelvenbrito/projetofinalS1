@@ -113,7 +113,7 @@ public class CadastroProdutosPainel extends JPanel {
 
   // métodos (atualizar tabela)
   // Método para atualizar a tabela de exibição com dados do banco de dados
-  private void atualizarTabela() {
+  void atualizarTabela() {
     tableModel.setRowCount(0); // Limpa todas as linhas existentes na tabela
     produtos = new ProdutosDAO().listarTodos();
     // Obtém os produtos atualizados do banco de dados
