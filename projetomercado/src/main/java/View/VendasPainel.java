@@ -87,14 +87,25 @@ public class VendasPainel extends JPanel {
         add(jSPane);
 
         tableModel = new DefaultTableModel(new Object[][] {},
-                new String[] { "Código", "Nome", "Quantidade", "Preço", "Desconto VIP" });
+                new String[] { "Código", "Nome", "Quantidade", "Preço", "Desconto VIP" }) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Aqui, você pode definir as colunas que não devem ser editáveis
+                return column != 0 && column != 1 && column != 2 && column != 3 && column != 4; // Por exemplo, torna a
+                                                                                                // coluna 0 (Código) e 2
+                                                                                                // (Quantidade) não
+                // editáveis
+            }
+        };
         table = new JTable(tableModel);
+
         jSPane.setViewportView(table);
         // Total da compra
         JPanel precoTotal = new JPanel();
         precoTotal.setLayout(new BorderLayout());
         precoTotal.add(new JLabel("Valor Final da Compra: "), BorderLayout.CENTER);
         precoTotal.add(valorFinal = new JTextField(20), BorderLayout.EAST);
+        valorFinal.setEditable(false);
         add(precoTotal);
 
         JPanel teste = new JPanel();
@@ -139,7 +150,7 @@ public class VendasPainel extends JPanel {
 
                     } else {
                         JOptionPane.showMessageDialog(null,
-                                "Não é possivel inserir desconto VIP após  inserir um produto ao carrinho");
+                                "Não é possivel inserir ou remover desconto VIP após  inserir um produto ao carrinho");
                     }
                 }
             }
@@ -163,7 +174,7 @@ public class VendasPainel extends JPanel {
                     if (descontoVip) {
 
                         tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
-                                quantidadeProdutoField.getText(), produto.getPreco(), produto.getPreco() * 25 });
+                                quantidadeProdutoField.getText(), produto.getPreco(), produto.getPreco() * 0.75 });
                         vf += (produto.getPreco() * 0.75) * Double.parseDouble(quantidadeProdutoField.getText());
                         valorFinal.setText(vf + "");
 

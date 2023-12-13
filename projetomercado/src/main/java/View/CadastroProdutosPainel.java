@@ -50,7 +50,16 @@ public class CadastroProdutosPainel extends JPanel {
     JScrollPane jSPane = new JScrollPane();
     add(jSPane);
     tableModel = new DefaultTableModel(new Object[][] {},
-        new String[] { "Códico de Barras", "Nome", "Preço", "Quantidade" });
+        new String[] { "Códico de Barras", "Nome", "Preço", "Quantidade" }) {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        // Aqui, você pode definir as colunas que não devem ser editáveis
+        return column != 0 && column != 1 && column != 2 && column != 3; // Por exemplo, torna a
+                                                                                        // coluna 0 (Código) e 2
+                                                                                        // (Quantidade) não
+        // editáveis
+      }
+    };
     table = new JTable(tableModel);
     jSPane.setViewportView(table);
 
