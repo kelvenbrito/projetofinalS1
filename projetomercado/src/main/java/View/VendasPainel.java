@@ -34,8 +34,8 @@ import Model.Clientes;
 public class VendasPainel extends JPanel {
     // Atributos(componentes)
     private JButton inserirProduto, apagarProduto, editarProduto, finalizarVenda, cadastrar;
-    private JTextField clienteCpfField, codigoProdutoField, quantidadeProdutoField;
-    private JLabel valorFinal, status;
+    private JTextField clienteCpfField, codigoProdutoField, quantidadeProdutoField, valorFinal;
+    private JLabel  status;
     private JComboBox formaPagamento;
 
     private JTable table;
@@ -48,6 +48,7 @@ public class VendasPainel extends JPanel {
     boolean descontoVip = false;
     int linhaEditar = 0;
     boolean verificPoduto = false;
+    int quantidadeVenda;
 
     //
     // Construtor(GUI-JPanel)
@@ -80,12 +81,7 @@ public class VendasPainel extends JPanel {
         botoes.add(editarProduto = new JButton("Editar"));
         botoes.add(apagarProduto = new JButton("Apagar"));
         add(botoes);
-        // Total da compra
-        JPanel precoTotal = new JPanel();
-        precoTotal.setLayout(new BorderLayout());
-        precoTotal.add(new JLabel("Valor Final da Compra: "), BorderLayout.WEST);
-        precoTotal.add(valorFinal = new JLabel(""), BorderLayout.CENTER);
-        add(precoTotal);
+      
         // tabela de clientes
         JScrollPane jSPane = new JScrollPane();
         add(jSPane);
@@ -94,6 +90,12 @@ public class VendasPainel extends JPanel {
                 new String[] { "Código", "Nome", "Quantidade", "Preço", "Desconto VIP" });
         table = new JTable(tableModel);
         jSPane.setViewportView(table);
+          // Total da compra
+        JPanel precoTotal = new JPanel();
+        precoTotal.setLayout(new BorderLayout());
+        precoTotal.add(new JLabel("Valor Final da Compra: "), BorderLayout.CENTER);
+        precoTotal.add(valorFinal = new JTextField(20), BorderLayout.EAST);
+        add(precoTotal);
 
         JPanel teste = new JPanel();
         teste.add(finalizarVenda = new JButton("Finalizar"));
@@ -157,18 +159,18 @@ public class VendasPainel extends JPanel {
             produtos = new ProdutosDAO().listarTodos();
 
             for (Produtos produto : produtos) {
-                if (descontoVip) {
-                    if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                    if (descontoVip) {
+
                         tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
-                                quantidadeProdutoField.getText(), produto.getPreco(), 25 });
+                                quantidadeProdutoField.getText(), produto.getPreco(), produto.getPreco() * 25 });
                         vf += (produto.getPreco() * 0.75) * Double.parseDouble(quantidadeProdutoField.getText());
                         valorFinal.setText(vf + "");
 
                         verificPoduto = true;
 
-                    }
-                } else {
-                    if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                    } else {
+
                         tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
                                 quantidadeProdutoField.getText(), produto.getPreco(), 0 });
                         vf += produto.getPreco() * Double.parseDouble(quantidadeProdutoField.getText());
@@ -177,10 +179,16 @@ public class VendasPainel extends JPanel {
                         verificPoduto = true;
 
                     }
-                }
+                     quantidadeVenda = produto.getQuantidade() - Integer.parseInt(quantidadeProdutoField.getText());
 
+                    operacoes.vender(codigoProdutoField.getText(), quantidadeVenda);
+
+                }
             }
-            if (!verificPoduto) {
+
+            if (!verificPoduto)
+
+            {
                 JOptionPane.showMessageDialog(null, "Produto não encontrado!");
             }
         });
@@ -209,9 +217,9 @@ public class VendasPainel extends JPanel {
                 produtos = new ProdutosDAO().listarTodos();
 
                 for (Produtos produto : produtos) {
+                    if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                        if (descontoVip) {
 
-                    if (descontoVip) {
-                        if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
                             tableModel.setValueAt(produto.getNome(), linhaEditar, 1);
                             tableModel.setValueAt(produto.getPreco(), linhaEditar, 3);
 
@@ -223,14 +231,13 @@ public class VendasPainel extends JPanel {
 
                             verificPoduto = true;
 
-                        }
-                    } else {
-                        if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                        } else {
+
                             tableModel.setValueAt(produto.getNome(), linhaEditar, 1);
                             tableModel.setValueAt(produto.getPreco(), linhaEditar, 3);
 
                             // Subtrai preco do produto no valorFinal
-                            vf -= precoAntigo;
+                            vf -= precoAntigo * quantidadeAntiga;
                             vf += produto.getPreco() *
                                     Double.parseDouble(quantidadeProdutoField.getText());
                             valorFinal.setText(vf + "");
@@ -238,6 +245,18 @@ public class VendasPainel extends JPanel {
                             verificPoduto = true;
 
                         }
+
+                        if (quantidadeAntiga - Integer.parseInt(quantidadeProdutoField.getText()) >= 0) {
+                             quantidadeVenda = produto.getQuantidade() + (quantidadeAntiga
+                                    - Integer.parseInt(quantidadeProdutoField.getText()));
+
+                        }else{
+                                quantidadeVenda = produto.getQuantidade() - (Integer.parseInt(quantidadeProdutoField.getText()) - quantidadeAntiga );
+                        }
+
+                
+
+                        operacoes.vender(codigoProdutoField.getText(), quantidadeVenda);
                     }
 
                 }

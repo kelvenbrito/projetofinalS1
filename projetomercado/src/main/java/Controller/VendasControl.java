@@ -56,6 +56,15 @@ public class VendasControl {
         JOptionPane.showMessageDialog(null, "Venda apagada com sucesso.");
     }
 
+     // Método para atualizar os dados de um carro no banco de dados
+     public void vender(String codigoBarra, int quantidade) {
+        // Chama o método de atualização no banco de dados
+        new VendasDAO().vender(codigoBarra, quantidade);
+
+        // Mensagem confirmando a edição
+        JOptionPane.showMessageDialog(null, "Venda realizada com sucesso.");
+    }
+
     // ======================Validação de Dados==========================
     // Método interno para validação de dados númericos
     // private boolean ApenasNumeros(String string) {

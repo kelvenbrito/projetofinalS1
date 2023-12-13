@@ -104,5 +104,25 @@ public class VendasDAO {
         }
     }
 
-    
+    public void vender( String codProduto, int quantidade){
+         PreparedStatement stmt = null;
+         // Define a instrução SQL parametrizada para apagar dados pela placa
+         String sql = "UPDATE produtos_noite SET quantidade = ? WHERE codProduto = ?";
+         try {
+            stmt = connection.prepareStatement(sql);
+         stmt.setInt(1, quantidade); // Corrigido: quantidade em terceiro
+         stmt.setString(2, codProduto); // Por último, o código do produto
+         int rowsEdit = stmt.executeUpdate(); // Executa a instrução SQL e obtém o número de linhas afetadas
+         if (rowsEdit > 0) {
+            System.out.println("Produto atualizado com sucesso");
+        } else {
+            System.out.println("Nenhum produto foi atualizado. Verifique o código do produto.");
+        }
+        }catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar dados no banco de dados.", e);
+        } finally {
+            ConnectionFactory.closeConnection(connection, stmt);
+        }
+    }
+
 }
