@@ -1,6 +1,5 @@
 package View;
 
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -8,7 +7,6 @@ import javax.swing.JTextField;
 
 import Connection.ClientesDAO;
 import Controller.ClientesControl;
-
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -46,11 +44,18 @@ public class cadastroCliente extends JPanel {
         // tratamento para botão cadastrar
         cadastrar.addActionListener(e -> {
 
-            operacoes.cadastrar(nomeCliente.getText(),  cpfCliente.getText());
+            operacoes.cadastrar(nomeCliente.getText(), cpfCliente.getText());
 
             nomeCliente.setText("");
             cpfCliente.setText("");
         });
 
+        // tratamento para botão cadastrar
+        // tratamento do botão apagar
+        excluir.addActionListener(e -> {
+            operacoes.apagar(cpfCliente.getText());
+            cpfCliente.setText("");
+            nomeCliente.setText("");
+        });
     }
 }

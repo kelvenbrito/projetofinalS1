@@ -62,7 +62,7 @@ public class VendasControl {
         new VendasDAO().vender(codigoBarra, quantidade);
 
         // Mensagem confirmando a edição
-        JOptionPane.showMessageDialog(null, "Venda realizada com sucesso.");
+        // JOptionPane.showMessageDialog(null, "Venda realizada com sucesso.");
     }
 
     // ======================Validação de Dados==========================

@@ -76,7 +76,7 @@ public class ClientesDAO {
             stmt.setString(1, nome);
             stmt.setString(2, cpf);
             stmt.executeUpdate();
-            System.out.println("Dados inseridos com sucesso");
+            System.out.println("Criente inseridos com sucesso");
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir dados no banco de dados.", e);
         } finally {
@@ -84,20 +84,20 @@ public class ClientesDAO {
         }
     }
 
-    // // Apagar dados do banco
-    // public void apagar(String idSerial) {
-    // PreparedStatement stmt = null;
-    // // Define a instrução SQL parametrizada para apagar dados pela placa
-    // String sql = "DELETE FROM vendas_noite WHERE idSerial = ?";
-    // try {
-    // stmt = connection.prepareStatement(sql);
-    // stmt.setString(1, idSerial);
-    // stmt.executeUpdate(); // Executa a instrução SQL
-    // System.out.println("Dado apagado com sucesso");
-    // } catch (SQLException e) {
-    // throw new RuntimeException("Erro ao apagar dados no banco de dados.", e);
-    // } finally {
-    // ConnectionFactory.closeConnection(connection, stmt);
-    // }
-    // }
+    // Apagar dados do banco
+    public void apagar(String cpf) {
+    PreparedStatement stmt = null;
+    // Define a instrução SQL parametrizada para apagar dados pela placa
+    String sql = "DELETE FROM clientes_noite WHERE cpf = ?";
+    try {
+    stmt = connection.prepareStatement(sql);
+    stmt.setString(1, cpf);
+    stmt.executeUpdate(); // Executa a instrução SQL
+    System.out.println("Cliente apagado com sucesso");
+    } catch (SQLException e) {
+    throw new RuntimeException("Erro ao apagar dados no banco de dados.", e);
+    } finally {
+    ConnectionFactory.closeConnection(connection, stmt);
+    }
+    }
 }

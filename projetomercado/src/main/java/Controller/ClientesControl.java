@@ -30,15 +30,15 @@ public class ClientesControl {
         JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso.");
     }
 
-    // // Método para apagar uma venda do banco de dados
-    // public void apagar(String cpf) {
+    // Método para apagar uma venda do banco de dados
+    public void apagar(String cpf) {
 
-    //     // Chama o método de exclusão no banco de dados
-    //     new ClientesDAO().apagar(cpf);
+        // Chama o método de exclusão no banco de dados
+        new ClientesDAO().apagar(cpf);
 
-    //     // Mensagem confirmando o edição
-    //     JOptionPane.showMessageDialog(null, "Cliente apagada com sucesso.");
-    // }
+        // Mensagem confirmando o edição
+        JOptionPane.showMessageDialog(null, "Cliente apagada com sucesso.");
+    }
 
     // ======================Validação de Dados==========================
     // Método interno para validação de dados númericos
