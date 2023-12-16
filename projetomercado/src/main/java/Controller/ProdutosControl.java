@@ -51,12 +51,20 @@ public class ProdutosControl {
             if (!codigoBarra.matches("[0-9]+")) {
                 throw new NumberFormatException("Erro! Verifique se o campo código de barras possui apenas números");
             }
+            if (!preco.matches("[0-9]+")) {
+                throw new NumberFormatException("Erro! Verifique se o campo preço possui apenas números");
+            }
+            if (!quantidade.matches("[0-9]+")) {
+                throw new NumberFormatException("Erro! Verifique se o campo quantidade possui apenas números");
+            }
             int existeCodigo = new ProdutosDAO().verificaCodigo(codigoBarra);
 
             if (existeCodigo > 0) {
                 throw new NumberFormatException("Erro! Já existe um produto com o mesmo código");
             }
-
+            if (!nome.matches("[a-zA-Z]+")) {
+                throw new NumberFormatException("Erro! Verifique se o nome do pruduto contém apenas letras");
+            }
             // Chama o método de cadastro no banco de dados
             new ProdutosDAO().cadastrar(codigoBarra, nome, Double.parseDouble(preco), Integer.parseInt(quantidade));
             // Atualiza a tabela de exibição após o cadastro
