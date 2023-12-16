@@ -56,13 +56,30 @@ public class VendasControl {
         JOptionPane.showMessageDialog(null, "Venda apagada com sucesso.");
     }
 
-     // Método para atualizar os dados de um carro no banco de dados
-     public void vender(String codigoBarra, int quantidade) {
-        // Chama o método de atualização no banco de dados
-        new VendasDAO().vender(codigoBarra, quantidade);
+    // Método para atualizar os dados de um carro no banco de dados
 
-        // Mensagem confirmando a edição
-        // JOptionPane.showMessageDialog(null, "Venda realizada com sucesso.");
+    public void vender(String codigoBarra, int quantidade) {
+        // Chama método para puxar a quantidade de produtos no banco de dados
+        int quantDisponivel = new VendasDAO().quantidadeProd(codigoBarra);
+        System.out.println("valor 1 --->>>" + quantidade);
+
+        try {
+
+            if ((quantidade * -1) <= quantDisponivel) {
+                // Chama o método de atualização no banco de dados
+                new VendasDAO().vender(codigoBarra, quantidade);
+                // Mensagem confirmando a edição
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "Quantidade indisponivel. Verifique o estoque");
+            }
+        }
+
+        catch (NumberFormatException e) {
+            // Tratamento de erro
+            e.printStackTrace();
+        }
+
     }
 
     // ======================Validação de Dados==========================

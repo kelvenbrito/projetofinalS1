@@ -134,4 +134,27 @@ public class ProdutosDAO {
         }
     }
 
+    public int verificaCodigo(String codigoProduto) {
+        PreparedStatement stmt = null;
+        // Define a instrução SQL parametrizada para pegar dados pelo codProduto
+        String sql = "SELECT codProduto FROM produtos_noite WHERE codProduto = ? ";
+        int codProduto = 0;
+        ResultSet rs = null;
+
+        try {
+            stmt = connection.prepareStatement(sql);
+            stmt.setString(1, codigoProduto);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                codProduto = rs.getInt("codProduto");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.closeConnection(connection, stmt);
+        }
+
+        return codProduto;
+    }
+
 }

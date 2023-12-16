@@ -169,38 +169,45 @@ public class VendasPainel extends JPanel {
         inserirProduto.addActionListener(e -> {
             produtos = new ProdutosDAO().listarTodos();
 
-            for (Produtos produto : produtos) {
-                if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
-                    if (descontoVip) {
+            // Variavel para receber quantidade que tem no estoque do produto
+            int quantDisponivel = new VendasDAO().quantidadeProd(codigoProdutoField.getText());
+            // Evita de inserir na tabela uma linha caso não tenha a quantidade no estoque
+            if (Integer.parseInt(quantidadeProdutoField.getText()) <= quantDisponivel) {
+                for (Produtos produto : produtos) {
+                    if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+                        if (descontoVip) {
 
-                        tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
-                                quantidadeProdutoField.getText(), produto.getPreco(), produto.getPreco() * 0.75 });
-                        vf += (produto.getPreco() * 0.75) * Double.parseDouble(quantidadeProdutoField.getText());
-                        valorFinal.setText(vf + "");
+                            tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
+                                    quantidadeProdutoField.getText(), produto.getPreco(), produto.getPreco() * 0.75 });
+                            vf += (produto.getPreco() * 0.75) * Double.parseDouble(quantidadeProdutoField.getText());
+                            valorFinal.setText(vf + "");
 
-                        verificPoduto = true;
+                            verificPoduto = true;
 
-                    } else {
+                        } else {
 
-                        tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
-                                quantidadeProdutoField.getText(), produto.getPreco(), 0 });
-                        vf += produto.getPreco() * Double.parseDouble(quantidadeProdutoField.getText());
-                        valorFinal.setText(vf + "");
+                            tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
+                                    quantidadeProdutoField.getText(), produto.getPreco(), 0 });
+                            vf += produto.getPreco() * Double.parseDouble(quantidadeProdutoField.getText());
+                            valorFinal.setText(vf + "");
 
-                        verificPoduto = true;
+                            verificPoduto = true;
+
+                        }
+                        quantidadeVenda = produto.getQuantidade() - Integer.parseInt(quantidadeProdutoField.getText());
+
+                        operacoes.vender(codigoProdutoField.getText(), quantidadeVenda);
 
                     }
-                    quantidadeVenda = produto.getQuantidade() - Integer.parseInt(quantidadeProdutoField.getText());
-
-                    operacoes.vender(codigoProdutoField.getText(), quantidadeVenda);
-
                 }
-            }
 
-            if (!verificPoduto)
+                if (!verificPoduto)
 
-            {
-                JOptionPane.showMessageDialog(null, "Produto não encontrado!");
+                {
+                    JOptionPane.showMessageDialog(null, "Produto não encontrado!");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Quantidade insuficiente no estoque!");
             }
         });
 

@@ -1,10 +1,12 @@
 package View;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseEvent;
 
@@ -55,8 +57,8 @@ public class CadastroProdutosPainel extends JPanel {
       public boolean isCellEditable(int row, int column) {
         // Aqui, você pode definir as colunas que não devem ser editáveis
         return column != 0 && column != 1 && column != 2 && column != 3; // Por exemplo, torna a
-                                                                                        // coluna 0 (Código) e 2
-                                                                                        // (Quantidade) não
+                                                                         // coluna 0 (Código) e 2
+                                                                         // (Quantidade) não
         // editáveis
       }
     };
@@ -67,8 +69,8 @@ public class CadastroProdutosPainel extends JPanel {
     new ProdutosDAO().criaTabela();
     // executar o método de atualizar tabela
     atualizarTabela();
-    // tratamento de eventos(construtor)
 
+    // tratamento de eventos(construtor)
     // tratamento para click do mouse na tabela
     table.addMouseListener(new MouseAdapter() {
       @Override
@@ -86,12 +88,14 @@ public class CadastroProdutosPainel extends JPanel {
     });
 
     ProdutosControl operacoes = new ProdutosControl(produtos, tableModel, table);
-
     // tratamento para botão cadastrar
     cadastrar.addActionListener(e -> {
 
+      operacoes.verificaCodigo(codBarras.getText());
+      
+
       operacoes.cadastrar(codBarras.getText(), nomeProd.getText(),
-          Double.parseDouble(precoProd.getText()), Integer.parseInt(quantProd.getText()));
+          precoProd.getText(), quantProd.getText());
 
       codBarras.setText("");
       nomeProd.setText("");
@@ -130,6 +134,33 @@ public class CadastroProdutosPainel extends JPanel {
       // Adiciona os dados de cada produto como uma nova linha na tabela Swing
       tableModel.addRow(
           new Object[] { produto.getCodigoBarra(), produto.getNome(), produto.getPreco(), produto.getQuantidade() });
+
+      // Verifica quantidade o estoque e muda cor na tabela
+      // for (int i = 0; i < tableModel.getRowCount(); i++) {
+      // String colunaQuantidade = String.valueOf(tableModel.getValueAt(i, 3));
+      // int quantidade = Integer.parseInt(colunaQuantidade);
+      // if (quantidade <= 5) {
+      // // table.setBackground(Color.RED);
+      // tableModel.setValueAt(produto.getQuantidade(), i,
+      // 3).setBackground(Color.RED);
+      // }
+      // }
+
     }
+    // Aplica o renderizador de células à coluna de quantidade (assumindo que seja a
+    // coluna 3)
+    table.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+      @Override
+      public void setValue(Object value) {
+        if (value instanceof Integer && (Integer) value <= 5) {
+          setBackground(Color.RED);
+        } else {
+          setBackground(table.getBackground()); // Define a cor de fundo padrão da tabela
+        }
+        setText((value == null) ? "" : value.toString());
+      }
+    });
+
   }
+
 }
