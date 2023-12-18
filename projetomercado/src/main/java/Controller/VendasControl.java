@@ -23,19 +23,7 @@ public class VendasControl {
         this.table = table;
     }
 
-    // Métodos do modelo CRUD
-    // Método para atualizar a tabela de exibição com dados do banco de dados
-    // private void atualizarTabela() {
-    // tableModel.setRowCount(0); // Limpa todas as linhas existentes na tabela
-    // vendas = new VendasDAO().listarTodos();
-    // // Obtém os vendas atualizados do banco de dados
-    // for (Vendas venda : vendas) {
-    // // Adiciona os dados de cada venda como uma nova linha na tabela Swing
-    // tableModel.addRow(new Object[] { venda.getIdSerial(), venda.getCpf(),
 
-    // venda.getDataHora(), venda.getTotalCompra() });
-    // }
-    // }
 
     // Método para cadastrar uma nova venda no banco de dados
     public void cadastrar(String cpf, String totalCompra, String dataHora) {
@@ -59,20 +47,16 @@ public class VendasControl {
     // Método para atualizar os dados de um carro no banco de dados
 
     public void vender(String codigoBarra, int quantidade) {
-        // Chama método para puxar a quantidade de produtos no banco de dados
-        int quantDisponivel = new VendasDAO().quantidadeProd(codigoBarra);
-        System.out.println("valor 1 --->>>" + quantidade);
 
-        try {
+   
 
-            if ((quantidade * -1) <= quantDisponivel) {
+         try {
+
+        
                 // Chama o método de atualização no banco de dados
                 new VendasDAO().vender(codigoBarra, quantidade);
                 // Mensagem confirmando a edição
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Quantidade indisponivel. Verifique o estoque");
-            }
+          
         }
 
         catch (NumberFormatException e) {
@@ -82,14 +66,4 @@ public class VendasControl {
 
     }
 
-    // ======================Validação de Dados==========================
-    // Método interno para validação de dados númericos
-    // private boolean ApenasNumeros(String string) {
-    // return string.matches("\\d*"); // Verifica se a string contém apenas dígitos
-    // }
-
-    // public boolean ApenasLetras(String texto) {
-    // return texto.matches("[a-zA-Z]+"); // Verifica se a string contém apenenas
-    // letras e/ou caracteres especiais
-    // }
 }

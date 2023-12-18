@@ -91,7 +91,7 @@ public class CadastroProdutosPainel extends JPanel {
     // tratamento para botão cadastrar
     cadastrar.addActionListener(e -> {
 
-      operacoes.verificaCodigo(codBarras.getText());
+
       
 
       operacoes.cadastrar(codBarras.getText(), nomeProd.getText(),
@@ -106,7 +106,7 @@ public class CadastroProdutosPainel extends JPanel {
     // tratamento do botão editar
     editar.addActionListener(e -> {
       operacoes.atualizar(codBarras.getText(), nomeProd.getText(),
-          Double.parseDouble(precoProd.getText()), Integer.parseInt(quantProd.getText()));
+          precoProd.getText(), quantProd.getText());
       codBarras.setText("");
       nomeProd.setText("");
       precoProd.setText("");
@@ -134,17 +134,6 @@ public class CadastroProdutosPainel extends JPanel {
       // Adiciona os dados de cada produto como uma nova linha na tabela Swing
       tableModel.addRow(
           new Object[] { produto.getCodigoBarra(), produto.getNome(), produto.getPreco(), produto.getQuantidade() });
-
-      // Verifica quantidade o estoque e muda cor na tabela
-      // for (int i = 0; i < tableModel.getRowCount(); i++) {
-      // String colunaQuantidade = String.valueOf(tableModel.getValueAt(i, 3));
-      // int quantidade = Integer.parseInt(colunaQuantidade);
-      // if (quantidade <= 5) {
-      // // table.setBackground(Color.RED);
-      // tableModel.setValueAt(produto.getQuantidade(), i,
-      // 3).setBackground(Color.RED);
-      // }
-      // }
 
     }
     // Aplica o renderizador de células à coluna de quantidade (assumindo que seja a

@@ -74,6 +74,7 @@ public class VendasPainel extends JPanel {
         inputPanel.add(new JLabel("Quantidade"));
         quantidadeProdutoField = new JTextField(3);
         quantidadeProdutoField.setText("1");
+
         inputPanel.add(quantidadeProdutoField);
         add(inputPanel);
         JPanel botoes = new JPanel();
@@ -164,6 +165,18 @@ public class VendasPainel extends JPanel {
         // tratamento para botão cadastrar
         finalizarVenda.addActionListener(e -> {
             operacoes.cadastrar(clienteCpfField.getText(), valorFinal.getText(), dataHora);
+            for (Produtos produto : produtos) {
+                try {
+                    if (produto.getQuantidade() <= 0) {
+                        throw new Exception("Produto código: " + produto.getCodigoBarra() + " Nome: "
+                                + produto.getNome() + " esta esgotado! faça o reabastecimento!");
+
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
+            }
+
         });
 
         inserirProduto.addActionListener(e -> {
@@ -171,10 +184,27 @@ public class VendasPainel extends JPanel {
 
             // Variavel para receber quantidade que tem no estoque do produto
             int quantDisponivel = new VendasDAO().quantidadeProd(codigoProdutoField.getText());
-            // Evita de inserir na tabela uma linha caso não tenha a quantidade no estoque
-            if (Integer.parseInt(quantidadeProdutoField.getText()) <= quantDisponivel) {
+            try {
                 for (Produtos produto : produtos) {
                     if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+
+                        verificPoduto = true;
+                    }
+                }
+                if (!verificPoduto) {
+                    throw new Exception("Erro! Produto não encontrado!");
+                }
+                // Evita de inserir na tabela uma linha caso não tenha a quantidade no estoque
+                if (Integer.parseInt(quantidadeProdutoField.getText()) > quantDisponivel) {
+
+                    throw new Exception("Erro! Quantidade insuficiente no estoque!");
+                }
+                if (quantidadeProdutoField.getText().isEmpty()) {
+                    throw new Exception("Erro! O campo do codigo do produto esta vazio!");
+                }
+                for (Produtos produto : produtos) {
+                    if (codigoProdutoField.getText().equals(produto.getCodigoBarra())) {
+
                         if (descontoVip) {
 
                             tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
@@ -182,16 +212,12 @@ public class VendasPainel extends JPanel {
                             vf += (produto.getPreco() * 0.75) * Double.parseDouble(quantidadeProdutoField.getText());
                             valorFinal.setText(vf + "");
 
-                            verificPoduto = true;
-
                         } else {
 
                             tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
                                     quantidadeProdutoField.getText(), produto.getPreco(), 0 });
                             vf += produto.getPreco() * Double.parseDouble(quantidadeProdutoField.getText());
                             valorFinal.setText(vf + "");
-
-                            verificPoduto = true;
 
                         }
                         quantidadeVenda = produto.getQuantidade() - Integer.parseInt(quantidadeProdutoField.getText());
@@ -201,14 +227,10 @@ public class VendasPainel extends JPanel {
                     }
                 }
 
-                if (!verificPoduto)
-
-                {
-                    JOptionPane.showMessageDialog(null, "Produto não encontrado!");
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Quantidade insuficiente no estoque!");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
             }
+
         });
 
         cadastrar.addActionListener(e -> {
