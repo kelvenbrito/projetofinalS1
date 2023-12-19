@@ -26,16 +26,17 @@ public class ClientesControl {
     // Método para cadastrar uma nova venda no banco de dados
     public void cadastrar(String cpf, String nome) {
         try {
+            
             // Verifica se há campos vazios
             if (nome.isEmpty() || cpf.isEmpty()) {
                 throw new NumberFormatException("Erro! Verifique se há algum campo vazio");
             }
             // Verifica se o CPF possui apenas números
-            if (!cpf.matches("[0-9]+")) {
+            if (cpf.matches("[0-9]+")) {
                 throw new NumberFormatException("Erro! Verifique se o campo CPF possui apenas números");
             }
             // Verifica se o nome contém apenas letras
-            if (!nome.matches("[a-zA-Z]+")) {
+            if (nome.matches("[a-zA-Z]+")) {
                 throw new NumberFormatException("Erro! Verifique se o nome contém apenas letras");
             }
 
