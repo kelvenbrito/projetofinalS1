@@ -12,17 +12,18 @@ public class JanelaPrincipal extends JFrame {
         add(jTPane);
         // criandos as tabs
         // tab1 carros
-        CadastroProdutosPainel tab1 = new CadastroProdutosPainel();
-        jTPane.add("Cadastro de produtos", tab1);
-        VendasPainel tab2 = new VendasPainel();
-        jTPane.add("Vendas", tab2);
+        VendasPainel tab1 = new VendasPainel();
+        jTPane.add("Vendas", tab1);
+        CadastroProdutosPainel tab2 = new CadastroProdutosPainel();
+        jTPane.add("Cadastro de produtos", tab2);
+        
      
         setBounds(100, 100, 600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         
     jTPane.addChangeListener(e->{
-        tab1.atualizarTabela();
+        tab2.atualizarTabela();
     });
     }
 
