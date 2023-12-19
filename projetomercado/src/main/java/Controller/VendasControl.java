@@ -25,29 +25,42 @@ public class VendasControl {
 
     // Método para cadastrar uma nova venda no banco de dados
     public void cadastrar(String cpf, String totalCompra, String dataHora) {
-        // Chama o método de cadastro no banco de dados
-        new VendasDAO().cadastrar(cpf, totalCompra, dataHora);
+        int option = JOptionPane.showConfirmDialog(null,
+                "Deseja realmente cadastrar essa venda no banco de dados?",
+                "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
 
-        // Mensagem confirmando o cadastro
-        JOptionPane.showMessageDialog(null, "Venda cadastrada com sucesso.");
+            // Chama o método de cadastro no banco de dados
+            new VendasDAO().cadastrar(cpf, totalCompra, dataHora);
+
+            // Mensagem confirmando o cadastro
+            JOptionPane.showMessageDialog(null, "Venda cadastrada com sucesso.");
+        }
     }
 
     // Método para apagar uma venda do banco de dados
     public void apagar(String idSerial) {
-        // Chama o método de exclusão no banco de dados
-        new VendasDAO().apagar(idSerial);
+        int option = JOptionPane.showConfirmDialog(null,
+                "Deseja realmente Excluir venda no banco de dados?",
+                "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
 
-        // Mensagem confirmando a exclusão
-        JOptionPane.showMessageDialog(null, "Venda apagada com sucesso.");
+            // Chama o método de exclusão no banco de dados
+            new VendasDAO().apagar(idSerial);
+
+            // Mensagem confirmando a exclusão
+            JOptionPane.showMessageDialog(null, "Venda apagada com sucesso.");
+        }
     }
 
     // Método para atualizar os dados de um produto no banco de dados após a venda
     public void vender(String codigoBarra, int quantidade) {
         try {
+            
             // Chama o método que registra a venda no banco de dados
             new VendasDAO().vender(codigoBarra, quantidade);
             // Confirmação de venda
-           
+
         } catch (NumberFormatException e) {
             // Tratamento de erro
             e.printStackTrace();

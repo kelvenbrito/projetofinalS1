@@ -44,11 +44,16 @@ public class ClientesControl {
             if (existeCpf > 0) {
                 throw new NumberFormatException("Erro! Já existe um CPF cadastrado");
             }
+            int option = JOptionPane.showConfirmDialog(null,
+                    "Deseja realmente cadastrar esse CPF no banco de dados?",
+                    "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                // Chama o método de cadastro no banco de dados
+                new ClientesDAO().cadastrar(cpf, nome);
 
-            // Chama o método de cadastro no banco de dados
-            new ClientesDAO().cadastrar(cpf, nome);
+                JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso.");
+            }
 
-            JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso.");
         } catch (NumberFormatException e) {
             // Exibe mensagem de erro caso haja exceção
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -57,11 +62,16 @@ public class ClientesControl {
 
     // Método para apagar um cliente do banco de dados
     public void apagar(String cpf) {
-        // Chama o método de exclusão no banco de dados
-        new ClientesDAO().apagar(cpf);
+        int option = JOptionPane.showConfirmDialog(null,
+                "Deseja realmente Excluir esse CPF no banco de dados?",
+                "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            // Chama o método de exclusão no banco de dados
+            new ClientesDAO().apagar(cpf);
 
-        // Mensagem confirmando a exclusão
-        JOptionPane.showMessageDialog(null, "Cliente apagado com sucesso.");
+            // Mensagem confirmando a exclusão
+            JOptionPane.showMessageDialog(null, "Cliente apagado com sucesso.");
+        }
+
     }
 }
-

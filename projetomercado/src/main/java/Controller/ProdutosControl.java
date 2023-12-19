@@ -46,13 +46,19 @@ public class ProdutosControl {
             if (existeCodigo > 0) {
                 throw new NumberFormatException("Erro! Já existe um produto com o mesmo código");
             }
+            int option = JOptionPane.showConfirmDialog(null,
+                    "Deseja realmente cadastrar esse produto do banco de dados?",
+                    "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
 
-            // Chama o método de cadastro no banco de dados
-            new ProdutosDAO().cadastrar(codigoBarra, nome, Double.parseDouble(preco), Integer.parseInt(quantidade));
-            // Atualiza a tabela de exibição após o cadastro
-            atualizarTabela();
-            // Mensagem confirmando o cadastro
-            JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso.");
+                // Chama o método de cadastro no banco de dados
+                new ProdutosDAO().cadastrar(codigoBarra, nome, Double.parseDouble(preco), Integer.parseInt(quantidade));
+                JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
+                // Atualiza a tabela de exibição após o cadastro
+                atualizarTabela();
+                // Mensagem confirmando o cadastro
+            }
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -62,12 +68,17 @@ public class ProdutosControl {
     public void atualizar(String codigoBarra, String nome, String preco, String quantidade) {
         try {
             validarCampos(codigoBarra, nome, preco, quantidade);
-            // Chama o método de atualização no banco de dados
-            new ProdutosDAO().atualizar(codigoBarra, nome, Double.parseDouble(preco), Integer.parseInt(quantidade));
-            // Atualiza a tabela de exibição após a atualização
-            atualizarTabela();
-            // Mensagem confirmando a atualização
-            JOptionPane.showMessageDialog(null, "Produto atualizado com sucesso.");
+            int option = JOptionPane.showConfirmDialog(null,
+                    "Deseja realmente udar as informações de produto no banco de dados?",
+                    "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                // Chama o método de atualização no banco de dados
+                new ProdutosDAO().atualizar(codigoBarra, nome, Double.parseDouble(preco), Integer.parseInt(quantidade));
+                // Atualiza a tabela de exibição após a atualização
+                atualizarTabela();
+                // Mensagem confirmando a atualização
+                JOptionPane.showMessageDialog(null, "Produto atualizado com sucesso.");
+            }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -75,12 +86,18 @@ public class ProdutosControl {
 
     // Método para apagar um produto do banco de dados
     public void apagar(String codigoBarra) {
-        // Chama o método de exclusão no banco de dados
-        new ProdutosDAO().apagar(codigoBarra);
-        // Atualiza a tabela de exibição após a exclusão
-        atualizarTabela();
-        // Mensagem confirmando a exclusão
-        JOptionPane.showMessageDialog(null, "Produto apagado com sucesso.");
+        int option = JOptionPane.showConfirmDialog(null,
+                "Deseja realmente apagar esse produto no banco de dados?",
+                "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            // Chama o método de exclusão no banco de dados
+            new ProdutosDAO().apagar(codigoBarra);
+            // Atualiza a tabela de exibição após a atualização
+            atualizarTabela();
+            // Mensagem confirmando a exclusão
+            JOptionPane.showMessageDialog(null, "Produto apagado com sucesso.");
+        }
+
     }
 
     // Método privado para validar os campos do produto

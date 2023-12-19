@@ -61,7 +61,7 @@ public class VendasPainel extends JPanel {
         clienteCpfField = new JTextField(20);
         inputPanel.add(clienteCpfField);
         // Status Cliente
-        inputPanel.add(status = new JLabel("Não Cadastrado"));
+        inputPanel.add(status = new JLabel(""));
         inputPanel.add(cadastrar = new JButton("Cadastrar"));
         // Forma de pagamento
         inputPanel.add(new JLabel("Forma de Pagamento"));
