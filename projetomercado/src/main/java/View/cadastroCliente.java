@@ -50,7 +50,6 @@ public class cadastroCliente extends JPanel {
             cpfCliente.setText("");
         });
 
-        // tratamento para botão cadastrar
         // tratamento do botão apagar
         excluir.addActionListener(e -> {
             operacoes.apagar(cpfCliente.getText());

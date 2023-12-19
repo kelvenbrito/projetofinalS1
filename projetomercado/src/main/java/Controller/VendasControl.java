@@ -12,18 +12,16 @@ import Model.Vendas;
 
 public class VendasControl {
     // Atributos
-    private List<Vendas> vendas;
-    private DefaultTableModel tableModel;
-    private JTable table;
+    private List<Vendas> vendas; // Lista de vendas
+    private DefaultTableModel tableModel; // Modelo da tabela
+    private JTable table; // Tabela
 
     // Construtor
     public VendasControl(List<Vendas> vendas, DefaultTableModel tableModel, JTable table) {
-        this.vendas = vendas;
-        this.tableModel = tableModel;
-        this.table = table;
+        this.vendas = vendas; // Inicialização da lista de vendas
+        this.tableModel = tableModel; // Inicialização do modelo da tabela
+        this.table = table; // Inicialização da tabela
     }
-
-
 
     // Método para cadastrar uma nova venda no banco de dados
     public void cadastrar(String cpf, String totalCompra, String dataHora) {
@@ -36,34 +34,23 @@ public class VendasControl {
 
     // Método para apagar uma venda do banco de dados
     public void apagar(String idSerial) {
-
         // Chama o método de exclusão no banco de dados
         new VendasDAO().apagar(idSerial);
 
-        // Mensagem confirmando o edição
+        // Mensagem confirmando a exclusão
         JOptionPane.showMessageDialog(null, "Venda apagada com sucesso.");
     }
 
-    // Método para atualizar os dados de um carro no banco de dados
-
+    // Método para atualizar os dados de um produto no banco de dados após a venda
     public void vender(String codigoBarra, int quantidade) {
-
-   
-
-         try {
-
-        
-                // Chama o método de atualização no banco de dados
-                new VendasDAO().vender(codigoBarra, quantidade);
-                // Mensagem confirmando a edição
-          
-        }
-
-        catch (NumberFormatException e) {
+        try {
+            // Chama o método que registra a venda no banco de dados
+            new VendasDAO().vender(codigoBarra, quantidade);
+            // Confirmação de venda
+           
+        } catch (NumberFormatException e) {
             // Tratamento de erro
             e.printStackTrace();
         }
-
     }
-
 }

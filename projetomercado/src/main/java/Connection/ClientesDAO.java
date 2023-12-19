@@ -100,4 +100,32 @@ public class ClientesDAO {
     ConnectionFactory.closeConnection(connection, stmt);
     }
     }
+
+
+
+
+public int verificaCpf(String cpf) {
+    PreparedStatement stmt = null;
+    // Define a instrução SQL parametrizada para pegar dados pelo codProduto
+    String sql = "SELECT cpf FROM clientes_noite WHERE cpf = ? ";
+    int cpfExiste = 0;
+    ResultSet rs = null;
+
+    try {
+        stmt = connection.prepareStatement(sql);
+        stmt.setString(1, cpf);
+        rs = stmt.executeQuery();
+
+        if (rs.next()) {
+           cpfExiste= rs.getInt("cpf");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        ConnectionFactory.closeConnection(connection, stmt, rs);
+    }
+
+    return cpfExiste;
+}
+
 }

@@ -15,6 +15,7 @@ import Controller.ProdutosControl;
 import Model.Produtos;
 
 public class CadastroProdutosPainel extends JPanel {
+    //[Declarações existentes de  componentes e atributos]
   private JTextField codBarras, nomeProd, precoProd, quantProd;
   private JButton cadastrar, apagar, editar;
   private List<Produtos> produtos;
@@ -25,6 +26,7 @@ public class CadastroProdutosPainel extends JPanel {
   public CadastroProdutosPainel() {
     super();
     // entrada de dados
+    // componentes da interface
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     add(new JLabel("Cadastro de Produtos"));
     JPanel inputPanel = new JPanel();
@@ -56,7 +58,7 @@ public class CadastroProdutosPainel extends JPanel {
       @Override
       public boolean isCellEditable(int row, int column) {
         // Aqui, você pode definir as colunas que não devem ser editáveis
-        return column != 0 && column != 1 && column != 2 && column != 3; // Por exemplo, torna a
+        return column != 0 && column != 1 && column != 2 && column != 3; //  torna a
                                                                          // coluna 0 (Código) e 2
                                                                          // (Quantidade) não
         // editáveis

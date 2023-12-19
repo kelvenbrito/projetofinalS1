@@ -7,47 +7,61 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import Connection.ClientesDAO;
+import Connection.ProdutosDAO;
 import Model.Clientes;
 
 public class ClientesControl {
     // Atributos
-    private List<Clientes> clientes;
-    private DefaultTableModel tableModel;
-    private JTable table;
+    private List<Clientes> clientes; // Lista de clientes
+    private DefaultTableModel tableModel; // Modelo da tabela
+    private JTable table; // Tabela
 
     // Construtor
     public ClientesControl() {
-        this.clientes = clientes;
-        this.tableModel = tableModel;
-        this.table = table;
+        this.clientes = clientes; // Inicialização da lista de clientes
+        this.tableModel = tableModel; // Inicialização do modelo da tabela
+        this.table = table; // Inicialização da tabela
     }
 
     // Método para cadastrar uma nova venda no banco de dados
     public void cadastrar(String cpf, String nome) {
-        // Chama o método de cadastro no banco de dados
-        new ClientesDAO().cadastrar(cpf, nome);
+        try {
+            // Verifica se há campos vazios
+            if (nome.isEmpty() || cpf.isEmpty()) {
+                throw new NumberFormatException("Erro! Verifique se há algum campo vazio");
+            }
+            // Verifica se o CPF possui apenas números
+            if (!cpf.matches("[0-9]+")) {
+                throw new NumberFormatException("Erro! Verifique se o campo CPF possui apenas números");
+            }
+            // Verifica se o nome contém apenas letras
+            if (!nome.matches("[a-zA-Z]+")) {
+                throw new NumberFormatException("Erro! Verifique se o nome contém apenas letras");
+            }
 
-        JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso.");
+            // Verifica se o CPF já está cadastrado
+            int existeCpf = new ClientesDAO().verificaCpf(cpf);
+            if (existeCpf > 0) {
+                throw new NumberFormatException("Erro! Já existe um CPF cadastrado");
+            }
+
+            // Chama o método de cadastro no banco de dados
+            new ClientesDAO().cadastrar(cpf, nome);
+
+            JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso.");
+        } catch (NumberFormatException e) {
+            // Exibe mensagem de erro caso haja exceção
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
-    // Método para apagar uma venda do banco de dados
+    // Método para apagar um cliente do banco de dados
     public void apagar(String cpf) {
-
         // Chama o método de exclusão no banco de dados
         new ClientesDAO().apagar(cpf);
 
-        // Mensagem confirmando o edição
-        JOptionPane.showMessageDialog(null, "Cliente apagada com sucesso.");
+        // Mensagem confirmando a exclusão
+        JOptionPane.showMessageDialog(null, "Cliente apagado com sucesso.");
     }
-
-    // ======================Validação de Dados==========================
-    // Método interno para validação de dados númericos
-    // private boolean ApenasNumeros(String string) {
-    // return string.matches("\\d*"); // Verifica se a string contém apenas dígitos
-    // }
-
-    // public boolean ApenasLetras(String texto) {
-    // return texto.matches("[a-zA-Z]+"); // Verifica se a string contém apenenas
-    // letras e/ou caracteres especiais
-    // }
 }
+

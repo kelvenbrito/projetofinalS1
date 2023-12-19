@@ -12,33 +12,32 @@ import Model.Produtos;
 
 public class ProdutosControl {
     // Atributos
-    private List<Produtos> produtos;
-    private DefaultTableModel tableModel;
-    private JTable table;
+    private List<Produtos> produtos; // Lista de produtos
+    private DefaultTableModel tableModel; // Modelo da tabela
+    private JTable table; // Tabela
 
     // Construtor
     public ProdutosControl(List<Produtos> produtos, DefaultTableModel tableModel, JTable table) {
-        this.produtos = produtos;
-        this.tableModel = tableModel;
-        this.table = table;
+        this.produtos = produtos; // Inicialização da lista de produtos
+        this.tableModel = tableModel; // Inicialização do modelo da tabela
+        this.table = table; // Inicialização da tabela
     }
 
     // Métodos do modelo CRUD
+
     // Método para atualizar a tabela de exibição com dados do banco de dados
     private void atualizarTabela() {
         tableModel.setRowCount(0); // Limpa todas as linhas existentes na tabela
-        produtos = new ProdutosDAO().listarTodos();
-        // Obtém os produtos atualizados do banco de dados
+        produtos = new ProdutosDAO().listarTodos(); // Obtém os produtos atualizados do banco de dados
+
+        // Adiciona os produtos como novas linhas na tabela Swing
         for (Produtos produto : produtos) {
-            // Adiciona os dados de cada carro como uma nova linha na tabela Swing
             tableModel.addRow(new Object[] { produto.getCodigoBarra(), produto.getNome(),
-
                     produto.getPreco(), produto.getQuantidade() });
-
         }
     }
 
-    // Método para cadastrar um novo carro no banco de dados
+    // Método para cadastrar um novo produto no banco de dados
     public void cadastrar(String codigoBarra, String nome, String preco, String quantidade) {
         try {
             validarCampos(codigoBarra, nome, preco, quantidade);
@@ -46,7 +45,6 @@ public class ProdutosControl {
 
             if (existeCodigo > 0) {
                 throw new NumberFormatException("Erro! Já existe um produto com o mesmo código");
-
             }
 
             // Chama o método de cadastro no banco de dados
@@ -60,7 +58,7 @@ public class ProdutosControl {
         }
     }
 
-    // Método para atualizar os dados de um carro no banco de dados
+    // Método para atualizar os dados de um produto no banco de dados
     public void atualizar(String codigoBarra, String nome, String preco, String quantidade) {
         try {
             validarCampos(codigoBarra, nome, preco, quantidade);
@@ -68,24 +66,24 @@ public class ProdutosControl {
             new ProdutosDAO().atualizar(codigoBarra, nome, Double.parseDouble(preco), Integer.parseInt(quantidade));
             // Atualiza a tabela de exibição após a atualização
             atualizarTabela();
-            // Mensagem confirmando o edição
+            // Mensagem confirmando a atualização
             JOptionPane.showMessageDialog(null, "Produto atualizado com sucesso.");
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
-    // Método para apagar um carro do banco de dados
+    // Método para apagar um produto do banco de dados
     public void apagar(String codigoBarra) {
-
         // Chama o método de exclusão no banco de dados
         new ProdutosDAO().apagar(codigoBarra);
         // Atualiza a tabela de exibição após a exclusão
         atualizarTabela();
-        // Mensagem confirmando o edição
+        // Mensagem confirmando a exclusão
         JOptionPane.showMessageDialog(null, "Produto apagado com sucesso.");
     }
 
+    // Método privado para validar os campos do produto
     private void validarCampos(String codigoBarra, String nome, String preco, String quantidade) {
         if (nome.isEmpty() || codigoBarra.isEmpty() || preco.isEmpty() || quantidade.isEmpty()) {
             throw new NumberFormatException("Erro! Verifique se há algum campo vazio");
@@ -96,7 +94,6 @@ public class ProdutosControl {
         if (preco.contains(",")) {
             throw new NumberFormatException("Erro! Use ponto no lugar de vírgula no campo preço");
         }
-
         if (!preco.matches("[0-9.]+")) {
             throw new NumberFormatException("Erro! Verifique se o campo preço possui apenas números");
         }
@@ -104,8 +101,7 @@ public class ProdutosControl {
             throw new NumberFormatException("Erro! Verifique se o campo quantidade possui apenas números");
         }
         if (!nome.matches("[a-zA-Z]+")) {
-            throw new NumberFormatException("Erro! Verifique se o nome do pruduto contém apenas letras");
+            throw new NumberFormatException("Erro! Verifique se o nome do produto contém apenas letras");
         }
-
     }
 }
